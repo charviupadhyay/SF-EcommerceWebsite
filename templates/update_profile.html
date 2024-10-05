@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    </head>
+    <body>
+
+<!-- Inside the script tag in your HTML template -->
+<script>
+    function submitProfile() {
+        // Get form data
+        var name = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
+        var address = document.getElementById('address').value;
+        var phone = document.getElementById('phone').value;
+        var dob = document.getElementById('dob').value;
+
+        // Construct the URL with updated profile data
+        var updateUrl = '/update_profile?name=' + encodeURIComponent(name) +
+                        '&email=' + encodeURIComponent(email) +
+                        '&address=' + encodeURIComponent(address) +
+                        '&phone=' + encodeURIComponent(phone) +
+                        '&dob=' + encodeURIComponent(dob);
+
+        // Redirect the user to the update profile URL
+        window.location.href = updateUrl;
+    }
+</script>
+
+
+    </body>
+</html>

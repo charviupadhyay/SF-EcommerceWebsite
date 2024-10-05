@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>Payment Gateway</title>
+    </head>
+    <body>
+        <p>Total price: {{ total_price }}</p>
+        <form action="{% url 'charge2' %}" method="post">
+            {% csrf_token %}
+            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="{{ key }}"
+            data-description="Payment Gateway"
+            data-amount="500"
+            data-locale="auto">
+            </script>
+        </form>
+    </body>
+</html>

@@ -1,0 +1,69 @@
+<html>
+    <head>
+
+    </head>
+    <body>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function addToCart(productId) {
+        var quantityInput = $('#quantity-' + productId);
+        var quantity = quantityInput.val();
+        var url = "{% url 'add_to_cart' 0 %}".replace('0', productId);
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            data: {
+                'quantity': quantity
+            },
+            success: function(response) {
+                // Handle success, if needed
+                // For example, update the cart total without redirecting
+                updateCartTotal(response.total);
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+                // Handle errors
+                // For example, display an error message to the user
+            }
+        });
+    }
+
+    function removeFromCart(productId) {
+        var url = "{% url 'remove_from_cart' 0 %}".replace('0', productId);
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(response) {
+                // Handle success, if needed
+                // For example, update the cart total without redirecting
+                updateCartTotal(response.total);
+                // Optionally, remove the product from the UI
+                $('#product-' + productId).remove();
+            },
+            error: function(xhr, errmsg, err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+                // Handle errors
+                // For example, display an error message to the user
+            }
+        });
+    }
+
+    function updateCartTotal(total) {
+        $('#cart-total').text("Total: $" + total);
+    }
+</script>
+
+<div>
+    <h3>{{ product.name }}</h3>
+    <p>Price: ${{ product.price }}</p>
+    <input type="number" name="quantity" id="quantity-{{ product.id }}" min="1" value="1">
+    <button onclick="addToCart('{{ product.id }}')">Add to Cart</button>
+    <button onclick="removeFromCart('{{ product.id }}')">Remove from Cart</button>
+</div>
+
+<div id="cart-total">Total: $0.00</div>
+
+    </body>
+</html>

@@ -1,0 +1,25 @@
+{% include 'header.html' %}
+{% load static %}
+<br>
+<br>
+<br>
+
+{% block content %}
+<h1>Search Results</h1>
+{% if results %}
+    <ul>
+        {% for product in results %}
+            <li>
+                <img src="{{ product.img.url }}" height="300" width="300" alt="{{ product.name }}">
+                <p>Name: {{ product.name }}</p>
+                <p>Price: {{ product.price }}</p>
+                <a href="#" class="add-to-cart-btn" onclick="addToCart('{{ product.id }}')">Add to Cart</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>No results found for '{{ query }}'.</p>
+{% endif %}
+{% endblock %}
+
+{% include 'footer.html' %}

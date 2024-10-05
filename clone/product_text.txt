@@ -1,0 +1,4 @@
+
+# templates/search/indexes/myapp/product_text.txt
+{{ object.name }}
+{{ object.description }}

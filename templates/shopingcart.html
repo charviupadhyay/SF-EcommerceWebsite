@@ -1,0 +1,128 @@
+{% include 'header.html' %}
+{% load static %}
+,<br>
+<br>
+<br>
+<br>
+<br>
+
+<!-- shoppingcart -->
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+    input[type="number"] {
+        width: 50px;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+    .add-to-cart-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 12px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+    }
+    .add-to-cart-btn:hover {
+        background-color: #45a049;
+    }
+    .product-image {
+        max-width: 100px;
+        max-height: 100px;
+    }
+</style>
+
+<table>
+  <thead>
+    <tr>
+      <th>Image</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Quantity</th>
+      <th>Total</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td><img src="{{ product.img.url }}" alt="{{ product.name }}" class="product-image"></td>
+      <td>{{ product.name }}</td>
+      <td>${{ product.price }}</td>
+      <td>
+        <input type="number" name="quantity" id="quantity-{{ product.id }}" min="1" value="1">
+      </td>
+      <td id="total-{{ product.id }}">${{ product.price }}</td>
+      <td>
+        <a href="#" class="add-to-cart-btn" onclick="addToCart('{{ product.id }}')">Add to Cart</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+<script>
+    function updateTotal(productId) {
+        var quantityInput = document.getElementById('quantity-' + productId);
+        var quantity = parseInt(quantityInput.value);
+        var price = parseFloat(document.getElementById('price-' + productId).textContent.replace('$', ''));
+        var total = quantity * price;
+        document.getElementById('total-' + productId).textContent = "$" + total.toFixed(2);
+    }
+
+    function addToCart(productId) {
+        var quantityInput = document.getElementById('quantity-' + productId);
+        var quantity = quantityInput.value;
+        var url = "{% url 'add_to_cart' 0 %}".replace('0', productId);
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}' // Add CSRF token if needed
+            },
+            body: 'quantity=' + quantity
+        })
+        .then(response => {
+            if (response.ok) {
+                // Optionally, update UI or show a success message
+                console.log('Item added to cart successfully');
+            } else {
+                console.error('Failed to add item to cart');
+            }
+        })
+        .catch(error => {
+            console.error('Error adding item to cart:', error);
+        });
+    }
+
+    // Attach event listeners to quantity inputs
+    var quantityInputs = document.querySelectorAll('input[type="number"]');
+    quantityInputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+            var productId = input.id.split('-')[1];
+            updateTotal(productId);
+        });
+    });
+</script>
+
+
+<br>
+<br>
+{% include 'footer.html' %}
